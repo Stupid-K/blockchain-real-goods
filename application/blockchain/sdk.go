@@ -1,7 +1,7 @@
 /**
- * @Author: 夜央 Oh oh oh oh oh oh (https://github.com/togettoyou)
- * @Email: zoujh99@qq.com
- * @Date: 2020/3/4 4:21 下午
+ * @Author: 网红电商组
+ * @Email: 233_666@qq.com
+ * @Date: 2020/7/18 4:21 下午
  * @Description: fabric-sdk-go的封装
  */
 package blockchain

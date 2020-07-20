@@ -1,14 +1,14 @@
 /**
- * @Author: 夜央 Oh oh oh oh oh oh (https://github.com/togettoyou)
- * @Email: zoujh99@qq.com
- * @Date: 2020/3/3 11:24 下午
+ * @Author: 网红电商组
+ * @Email: 233_666@qq.com
+ * @Date: 2020/7/19 11:24 下午
  * @Description: 测试api
  */
 package v1
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/togettoyou/blockchain-real-estate/application/pkg/app"
+	"github.com/Stupid-K/blockchain-real-goods/application/pkg/app"
 	"net/http"
 )
 

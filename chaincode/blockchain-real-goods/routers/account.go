@@ -1,7 +1,7 @@
 /**
- * @Author: 夜央 Oh oh oh oh oh oh (https://github.com/togettoyou)
- * @Email: zoujh99@qq.com
- * @Date: 2020/3/5 4:18 下午
+ * @Author: 网红电商组
+ * @Email: 233_666@qq.com
+ * @Date: 2020/7/19 4:18 下午
  * @Description: 账户相关合约路由
  */
 package routers
@@ -11,8 +11,8 @@ import (
 	"fmt"
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 	pb "github.com/hyperledger/fabric/protos/peer"
-	"github.com/togettoyou/blockchain-real-estate/chaincode/blockchain-real-estate/lib"
-	"github.com/togettoyou/blockchain-real-estate/chaincode/blockchain-real-estate/utils"
+	"github.com/Stupid-K/blockchain-real-goods/chaincode/blockchain-real-estate/lib"
+	"github.com/Stupid-K/blockchain-real-goods/chaincode/blockchain-real-estate/utils"
 )
 
 //查询账户列表

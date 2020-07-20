@@ -1,7 +1,7 @@
 /**
- * @Author: 夜央 Oh oh oh oh oh oh (https://github.com/togettoyou)
- * @Email: zoujh99@qq.com
- * @Date: 2020/3/3 11:17 下午
+ * @Author: 网红电商组
+ * @Email: 233_665@qq.com
+ * @Date: 2020/7/19 11:24 下午
  * @Description: 路由配置
  */
 package routers
@@ -11,7 +11,7 @@ import (
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
-	v1 "github.com/togettoyou/blockchain-real-estate/application/routers/api/v1"
+	v1 "github.com/Stupid-K/blockchain-real-goods/application/routers/api/v1"
 	"net/http"
 	"strings"
 )
@@ -28,17 +28,13 @@ func InitRouter() *gin.Engine {
 	{
 		apiV1.GET("/hello", v1.Hello)
 		apiV1.POST("/queryAccountList", v1.QueryAccountList)
-		apiV1.POST("/createRealEstate", v1.CreateRealEstate)
-		apiV1.POST("/queryRealEstateList", v1.QueryRealEstateList)
+		apiV1.POST("/createRealGoods", v1.CreateRealGoods)
+		apiV1.POST("/queryRealGoodsList", v1.QueryRealGoodsList)
 		apiV1.POST("/createSelling", v1.CreateSelling)
 		apiV1.POST("/createSellingByBuy", v1.CreateSellingByBuy)
 		apiV1.POST("/querySellingList", v1.QuerySellingList)
 		apiV1.POST("/querySellingListByBuyer", v1.QuerySellingListByBuyer)
 		apiV1.POST("/updateSelling", v1.UpdateSelling)
-		apiV1.POST("/createDonating", v1.CreateDonating)
-		apiV1.POST("/queryDonatingList", v1.QueryDonatingList)
-		apiV1.POST("/queryDonatingListByGrantee", v1.QueryDonatingListByGrantee)
-		apiV1.POST("/updateDonating", v1.UpdateDonating)
 	}
 	// 静态文件路由
 	r.StaticFS("/web", http.Dir("./dist/"))

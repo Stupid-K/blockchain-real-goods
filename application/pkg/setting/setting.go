@@ -1,6 +1,6 @@
 /**
- * @Author: 夜央 Oh oh oh oh oh oh (https://github.com/togettoyou)
- * @Email: zoujh99@qq.com
+ * @Author: 网红电商组
+ * @Email: 233_666@qq.com
  * @Date: 2020/3/4 12:50 上午
  * @Description: 将所有的配置项统管到 setting 中
  */

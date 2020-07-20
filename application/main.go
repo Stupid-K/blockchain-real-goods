@@ -1,7 +1,7 @@
 /**
- * @Author: 夜央 Oh oh oh oh oh oh (https://github.com/togettoyou)
- * @Email: zoujh99@qq.com
- * @Date: 2020/3/3 11:15 下午
+ * @Author: 网红电商组
+ * @Email: 233_666@qq.com
+ * @Date: 2020/7/18 11:15 下午
  * @Description: application启动入口
  */
 package main
@@ -9,11 +9,11 @@ package main
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/togettoyou/blockchain-real-estate/application/blockchain"
-	_ "github.com/togettoyou/blockchain-real-estate/application/docs"
-	"github.com/togettoyou/blockchain-real-estate/application/pkg/setting"
-	"github.com/togettoyou/blockchain-real-estate/application/routers"
-	"github.com/togettoyou/blockchain-real-estate/application/service"
+	"github.com/Stupid-K/blockchain-real-goods/application/blockchain"
+	_ "github.com/Stupid-K/blockchain-real-goods/application/docs"
+	"github.com/Stupid-K/blockchain-real-goods/application/pkg/setting"
+	"github.com/Stupid-K/blockchain-real-goods/application/routers"
+	"github.com/Stupid-K/blockchain-real-goods/application/service"
 	"log"
 	"net/http"
 	"time"

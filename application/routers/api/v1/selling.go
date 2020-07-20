@@ -1,7 +1,7 @@
 /**
- * @Author: 夜央 Oh oh oh oh oh oh (https://github.com/togettoyou)
- * @Email: zoujh99@qq.com
- * @Date: 2020/3/12 12:09 下午
+ * @Author: 网红电商组
+ * @Email: 233_666@qq.com
+ * @Date: 2020/7/19 12:09 下午
  * @Description: 销售相关接口
  */
 package v1
@@ -11,34 +11,34 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
-	bc "github.com/togettoyou/blockchain-real-estate/application/blockchain"
-	"github.com/togettoyou/blockchain-real-estate/application/pkg/app"
+	bc "github.com/Stupid-K/blockchain-real-goods/application/blockchain"
+	"github.com/Stupid-K/blockchain-real-goods/application/pkg/app"
 	"net/http"
 	"strconv"
 )
 
 type SellingRequestBody struct {
-	ObjectOfSale string  `json:"objectOfSale"` //销售对象(正在出售的房地产RealEstateID)
-	Seller       string  `json:"seller"`       //发起销售人、卖家(卖家AccountId)
+	ObjectOfSale string  `json:"objectOfSale"` //销售对象(正在销售的商品RealGoodsID)
+	Seller       string  `json:"seller"`       //发起推荐的网红(卖家AccountId)
 	Price        float64 `json:"price"`        //价格
 	SalePeriod   int     `json:"salePeriod"`   //智能合约的有效期(单位为天)
 }
 
 type SellingByBuyRequestBody struct {
-	ObjectOfSale string `json:"objectOfSale"` //销售对象(正在出售的房地产RealEstateID)
-	Seller       string `json:"seller"`       //发起销售人、卖家(卖家AccountId)
-	Buyer        string `json:"buyer"`        //买家(买家AccountId)
+	ObjectOfSale string  `json:"objectOfSale"` //销售对象(正在销售的商品RealGoodsID)
+    Seller       string  `json:"seller"`       //发起推荐的网红(卖家AccountId)
+	Buyer        string  `json:"buyer"`        //买家(买家AccountId)
 }
 type SellingListQueryRequestBody struct {
-	Seller string `json:"seller"` //发起销售人、卖家(卖家AccountId)
+    Seller       string  `json:"seller"`       //发起促销的网红(卖家AccountId)
 }
 type SellingListQueryByBuyRequestBody struct {
-	Buyer string `json:"buyer"` //买家(买家AccountId)
+	Buyer        string  `json:"buyer"`        //买家(买家AccountId)
 }
 type UpdateSellingRequestBody struct {
-	ObjectOfSale string `json:"objectOfSale"` //销售对象(正在出售的房地产RealEstateID)
-	Seller       string `json:"seller"`       //发起销售人、卖家(卖家AccountId)
-	Buyer        string `json:"buyer"`        //买家(买家AccountId)
+	ObjectOfSale string  `json:"objectOfSale"` //销售对象(正在销售的商品RealGoodsID)
+    Seller       string  `json:"seller"`       //发起推荐的网红(卖家AccountId)
+	Buyer        string  `json:"buyer"`        //买家(买家AccountId)
 	Status       string `json:"status"`       //需要更改的状态
 }
 
@@ -119,7 +119,7 @@ func CreateSellingByBuy(c *gin.Context) {
 	appG.Response(http.StatusOK, "成功", data)
 }
 
-// @Summary 查询销售(可查询所有，也可根据发起销售人查询)(发起的)
+// @Summary 查询销售(可查询所有，也可根据网红查询)(发起的)
 // @Param sellingListQuery body SellingListQueryRequestBody true "sellingListQuery"
 // @Produce  json
 // @Success 200 {object} app.Response

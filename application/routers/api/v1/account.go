@@ -1,7 +1,7 @@
 /**
- * @Author: 夜央 Oh oh oh oh oh oh (https://github.com/togettoyou)
- * @Email: zoujh99@qq.com
- * @Date: 2020/3/5 12:55 上午
+ * @Author: 网红电商组
+ * @Email: 233_666@qq.com
+ * @Date: 2020/7/19 12:55 上午
  * @Description: 账户信息相关接口
  */
 package v1
@@ -11,8 +11,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
-	bc "github.com/togettoyou/blockchain-real-estate/application/blockchain"
-	"github.com/togettoyou/blockchain-real-estate/application/pkg/app"
+	bc "github.com/Stupid-K/blockchain-real-goods/application/blockchain"
+	"github.com/Stupid-K/blockchain-real-goods/application/pkg/app"
 	"net/http"
 )
 

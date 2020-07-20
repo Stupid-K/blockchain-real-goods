@@ -1,7 +1,7 @@
 /**
- * @Author: 夜央 Oh oh oh oh oh oh (https://github.com/togettoyou)
- * @Email: zoujh99@qq.com
- * @Date: 2020/3/10 6:40 下午
+ * @Author: 网红电商组
+ * @Email: 233_666@qq.com
+ * @Date: 2020/7/19 6:40 下午
  * @Description: 销售相关合约路由
  */
 package routers
@@ -11,8 +11,8 @@ import (
 	"fmt"
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 	pb "github.com/hyperledger/fabric/protos/peer"
-	"github.com/togettoyou/blockchain-real-estate/chaincode/blockchain-real-estate/lib"
-	"github.com/togettoyou/blockchain-real-estate/chaincode/blockchain-real-estate/utils"
+	"github.com/Stupid-K/blockchain-real-goods/chaincode/blockchain-real-goods/lib"
+	"github.com/Stupid-K/blockchain-real-goods/chaincode/blockchain-real-goods/utils"
 	"strconv"
 	"time"
 )
@@ -44,18 +44,18 @@ func CreateSelling(stub shim.ChaincodeStubInterface, args []string) pb.Response 
 		formattedSalePeriod = val
 	}
 	//判断objectOfSale是否属于seller
-	resultsRealEstate, err := utils.GetStateByPartialCompositeKeys2(stub, lib.RealEstateKey, []string{seller, objectOfSale})
-	if err != nil || len(resultsRealEstate) != 1 {
+	resultsRealGoods, err := utils.GetStateByPartialCompositeKeys2(stub, lib.RealGoodsKey, []string{seller, objectOfSale})
+	if err != nil || len(resultsRealGoods) != 1 {
 		return shim.Error(fmt.Sprintf("验证%s属于%s失败: %s", objectOfSale, seller, err))
 	}
-	var realEstate lib.RealEstate
-	if err = json.Unmarshal(resultsRealEstate[0], &realEstate); err != nil {
+	var realGoods lib.RealGoods
+	if err = json.Unmarshal(resultsRealGoods[0], &realGoods); err != nil {
 		return shim.Error(fmt.Sprintf("CreateSelling-反序列化出错: %s", err))
 	}
 	//判断记录是否已存在，不能重复发起销售
-	//若Encumbrance为true即说明此房产已经正在担保状态
-	if realEstate.Encumbrance {
-		return shim.Error("此房地产已经作为担保状态，不能重复发起销售")
+	//若Encumbrance为true即说明此商品处于不良状态
+	if realGoods.Encumbrance {
+		return shim.Error("此商品处于不良状态，不能发起销售")
 	}
 	selling := &lib.Selling{
 		ObjectOfSale:  objectOfSale,
@@ -70,9 +70,9 @@ func CreateSelling(stub shim.ChaincodeStubInterface, args []string) pb.Response 
 	if err := utils.WriteLedger(selling, stub, lib.SellingKey, []string{selling.Seller, selling.ObjectOfSale}); err != nil {
 		return shim.Error(fmt.Sprintf("%s", err))
 	}
-	//将房子状态设置为正在担保状态
-	realEstate.Encumbrance = true
-	if err := utils.WriteLedger(realEstate, stub, lib.RealEstateKey, []string{realEstate.Proprietor, realEstate.RealEstateID}); err != nil {
+	//将商品状态设置为不良状态
+	realGoods.Encumbrance = true
+	if err := utils.WriteLedger(realGoods, stub, lib.RealGoodsKey, []string{realGoods.Proprietor, realGoods.RealGoodsID}); err != nil {
 		return shim.Error(fmt.Sprintf("%s", err))
 	}
 	//将成功创建的信息返回
@@ -99,10 +99,10 @@ func CreateSellingByBuy(stub shim.ChaincodeStubInterface, args []string) pb.Resp
 	if seller == buyer {
 		return shim.Error("买家和卖家不能同一人")
 	}
-	//根据objectOfSale和seller获取想要购买的房产信息，确认存在该房产
-	resultsRealEstate, err := utils.GetStateByPartialCompositeKeys2(stub, lib.RealEstateKey, []string{seller, objectOfSale})
-	if err != nil || len(resultsRealEstate) != 1 {
-		return shim.Error(fmt.Sprintf("根据%s和%s获取想要购买的房产信息失败: %s", objectOfSale, seller, err))
+	//根据objectOfSale和seller获取想要购买的商品信息，确认存在该商品
+	resultsRealGoods, err := utils.GetStateByPartialCompositeKeys2(stub, lib.RealGoodsKey, []string{seller, objectOfSale})
+	if err != nil || len(resultsRealGoods) != 1 {
+		return shim.Error(fmt.Sprintf("根据%s和%s获取想要购买的商品信息失败: %s", objectOfSale, seller, err))
 	}
 	//根据objectOfSale和seller获取销售信息
 	resultsSelling, err := utils.GetStateByPartialCompositeKeys2(stub, lib.SellingKey, []string{seller, objectOfSale})
@@ -131,7 +131,7 @@ func CreateSellingByBuy(stub shim.ChaincodeStubInterface, args []string) pb.Resp
 	}
 	//判断余额是否充足
 	if buyerAccount.Balance < selling.Price {
-		return shim.Error(fmt.Sprintf("房产售价为%f,您的当前余额为%f,购买失败", selling.Price, buyerAccount.Balance))
+		return shim.Error(fmt.Sprintf("商品售价为%f,您的当前余额为%f,购买失败", selling.Price, buyerAccount.Balance))
 	}
 	//将buyer写入交易selling,修改交易状态
 	selling.Buyer = buyer
@@ -230,13 +230,13 @@ func UpdateSelling(stub shim.ChaincodeStubInterface, args []string) pb.Response 
 	if buyer == seller {
 		return shim.Error("买家和卖家不能同一人")
 	}
-	//根据objectOfSale和seller获取想要购买的房产信息，确认存在该房产
-	resultsRealEstate, err := utils.GetStateByPartialCompositeKeys2(stub, lib.RealEstateKey, []string{seller, objectOfSale})
-	if err != nil || len(resultsRealEstate) != 1 {
-		return shim.Error(fmt.Sprintf("根据%s和%s获取想要购买的房产信息失败: %s", objectOfSale, seller, err))
+	//根据objectOfSale和seller获取想要购买的商品信息，确认存在该商品
+	resultsRealGoods, err := utils.GetStateByPartialCompositeKeys2(stub, lib.RealGoodsKey, []string{seller, objectOfSale})
+	if err != nil || len(resultsRealGoods) != 1 {
+		return shim.Error(fmt.Sprintf("根据%s和%s获取想要购买的商品信息失败: %s", objectOfSale, seller, err))
 	}
-	var realEstate lib.RealEstate
-	if err = json.Unmarshal(resultsRealEstate[0], &realEstate); err != nil {
+	var realGoods lib.RealGoods
+	if err = json.Unmarshal(resultsRealGoods[0], &realGoods); err != nil {
 		return shim.Error(fmt.Sprintf("UpdateSellingBySeller-反序列化出错: %s", err))
 	}
 	//根据objectOfSale和seller获取销售信息
@@ -295,20 +295,20 @@ func UpdateSelling(stub shim.ChaincodeStubInterface, args []string) pb.Response 
 		if err := utils.WriteLedger(accountSeller, stub, lib.AccountKey, []string{accountSeller.AccountId}); err != nil {
 			return shim.Error(fmt.Sprintf("卖家确认接收资金失败%s", err))
 		}
-		//将房产信息转入买家，并重置担保状态
-		realEstate.Proprietor = buyer
-		realEstate.Encumbrance = false
-		realEstate.RealEstateID = fmt.Sprintf("%d", time.Now().Local().UnixNano()) //重新更新房产ID
-		if err := utils.WriteLedger(realEstate, stub, lib.RealEstateKey, []string{realEstate.Proprietor, realEstate.RealEstateID}); err != nil {
+		//将商品信息转入买家，并重置不良状态
+		realGoods.Proprietor = buyer
+		realGoods.Encumbrance = false
+		realGoods.RealGoodsID = fmt.Sprintf("%d", time.Now().Local().UnixNano()) //重新更新商品ID
+		if err := utils.WriteLedger(realGoods, stub, lib.RealGoodsKey, []string{realGoods.Proprietor, realGoods.RealGoodsID}); err != nil {
 			return shim.Error(fmt.Sprintf("%s", err))
 		}
-		//清除原来的房产信息
-		if err := utils.DelLedger(stub, lib.RealEstateKey, []string{seller, objectOfSale}); err != nil {
+		//清除原来的商品信息
+		if err := utils.DelLedger(stub, lib.RealGoodsKey, []string{seller, objectOfSale}); err != nil {
 			return shim.Error(fmt.Sprintf("%s", err))
 		}
 		//订单状态设置为完成，写入账本
 		selling.SellingStatus = lib.SellingStatusConstant()["done"]
-		selling.ObjectOfSale = realEstate.RealEstateID //重新更新房产ID
+		selling.ObjectOfSale = realGoods.RealGoodsID //重新更新商品ID
 		if err := utils.WriteLedger(selling, stub, lib.SellingKey, []string{selling.Seller, objectOfSale}); err != nil {
 			return shim.Error(fmt.Sprintf("%s", err))
 		}
@@ -324,13 +324,13 @@ func UpdateSelling(stub shim.ChaincodeStubInterface, args []string) pb.Response 
 		}
 		break
 	case "cancelled":
-		data, err = closeSelling("cancelled", selling, realEstate, sellingBuy, buyer, stub)
+		data, err = closeSelling("cancelled", selling, realGoods, sellingBuy, buyer, stub)
 		if err != nil {
 			return shim.Error(fmt.Sprintf("%s", err))
 		}
 		break
 	case "expired":
-		data, err = closeSelling("expired", selling, realEstate, sellingBuy, buyer, stub)
+		data, err = closeSelling("expired", selling, realGoods, sellingBuy, buyer, stub)
 		if err != nil {
 			return shim.Error(fmt.Sprintf("%s", err))
 		}
@@ -344,13 +344,13 @@ func UpdateSelling(stub shim.ChaincodeStubInterface, args []string) pb.Response 
 //不管是取消还是过期，都分两种情况
 //1、当前处于saleStart销售状态
 //2、当前处于delivery交付中状态
-func closeSelling(closeStart string, selling lib.Selling, realEstate lib.RealEstate, sellingBuy lib.SellingBuy, buyer string, stub shim.ChaincodeStubInterface) ([]byte, error) {
+func closeSelling(closeStart string, selling lib.Selling, realGoods lib.RealGoods, sellingBuy lib.SellingBuy, buyer string, stub shim.ChaincodeStubInterface) ([]byte, error) {
 	switch selling.SellingStatus {
 	case lib.SellingStatusConstant()["saleStart"]:
 		selling.SellingStatus = lib.SellingStatusConstant()[closeStart]
-		//重置房产信息担保状态
-		realEstate.Encumbrance = false
-		if err := utils.WriteLedger(realEstate, stub, lib.RealEstateKey, []string{realEstate.Proprietor, realEstate.RealEstateID}); err != nil {
+		//重置商品信息不良状态
+		realGoods.Encumbrance = false
+		if err := utils.WriteLedger(realGoods, stub, lib.RealGoodsKey, []string{realGoods.Proprietor, realGoods.RealGoodsID}); err != nil {
 			return nil, err
 		}
 		if err := utils.WriteLedger(selling, stub, lib.SellingKey, []string{selling.Seller, selling.ObjectOfSale}); err != nil {
@@ -376,9 +376,9 @@ func closeSelling(closeStart string, selling lib.Selling, realEstate lib.RealEst
 		if err := utils.WriteLedger(accountBuyer, stub, lib.AccountKey, []string{accountBuyer.AccountId}); err != nil {
 			return nil, err
 		}
-		//重置房产信息担保状态
-		realEstate.Encumbrance = false
-		if err := utils.WriteLedger(realEstate, stub, lib.RealEstateKey, []string{realEstate.Proprietor, realEstate.RealEstateID}); err != nil {
+		//重置商品信息不良状态
+		realGoods.Encumbrance = false
+		if err := utils.WriteLedger(realGoods, stub, lib.RealGoodsKey, []string{realGoods.Proprietor, realGoods.RealGoodsID}); err != nil {
 			return nil, err
 		}
 		//更新销售状态
